@@ -1,0 +1,197 @@
+const fs = require('fs');
+const path = require('path');
+
+const targetDir = path.join(__dirname, '..', 'public', 'images', 'illustrations');
+if (!fs.existsSync(targetDir)) {
+  fs.mkdirSync(targetDir, { recursive: true });
+}
+
+function writeSvg(filename, svgContent) {
+  fs.writeFileSync(path.join(targetDir, filename), svgContent.trim());
+}
+
+// 1. Isometric Hero Scene (Grocery basket + Local Food boxes + Lagos Delivers scooter)
+writeSvg('hero-basket-scooter.svg', `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 450" width="100%" height="100%" fill="none">
+  <!-- Floor shadow -->
+  <ellipse cx="320" cy="380" rx="240" ry="40" fill="#EADFC8" opacity="0.6"/>
+
+  <!-- Left: Stacked boxes "LOCAL FOOD BETTER LIVING" -->
+  <g transform="translate(60, 230)">
+    <!-- Bottom box -->
+    <path d="M40 90 L110 50 L180 90 L110 130 Z" fill="#D4A373"/>
+    <path d="M40 90 L110 130 L110 190 L40 150 Z" fill="#BC8A5F"/>
+    <path d="M110 130 L180 90 L180 150 L110 190 Z" fill="#A47148"/>
+    <!-- Stamp text on box -->
+    <g transform="translate(65, 145) rotate(-15)">
+      <rect x="0" y="0" width="36" height="30" rx="3" fill="#8B5E34" opacity="0.5"/>
+      <text x="18" y="10" font-family="Arial, sans-serif" font-weight="900" font-size="6" fill="#FFF" text-anchor="middle">LOCAL</text>
+      <text x="18" y="18" font-family="Arial, sans-serif" font-weight="900" font-size="6" fill="#FFF" text-anchor="middle">FOOD</text>
+      <text x="18" y="26" font-family="Arial, sans-serif" font-weight="900" font-size="5" fill="#F4B63F" text-anchor="middle">BETTER LIVING</text>
+    </g>
+
+    <!-- Top box -->
+    <g transform="translate(20, -50)">
+      <path d="M40 90 L100 55 L160 90 L100 125 Z" fill="#DEB887"/>
+      <path d="M40 90 L100 125 L100 175 L40 140 Z" fill="#CD853F"/>
+      <path d="M100 125 L160 90 L160 140 L100 175 Z" fill="#B8860B"/>
+      <!-- Tape -->
+      <path d="M85 64 L115 82 L115 145 L85 127 Z" fill="#F4B63F" opacity="0.6"/>
+    </g>
+  </g>
+
+  <!-- Center: Deep Green Grocery Basket filled with food -->
+  <g transform="translate(160, 160)">
+    <!-- Basket Shadow -->
+    <ellipse cx="140" cy="220" rx="100" ry="25" fill="#4B3A26" opacity="0.2"/>
+
+    <!-- Provisions sticking out of the basket -->
+    <!-- Rice sack -->
+    <g transform="translate(60, 20)">
+      <path d="M20 20 C20 15, 60 15, 60 20 L64 90 C64 95, 16 95, 16 90 Z" fill="#F3EBD8" stroke="#D3C5A5" stroke-width="2"/>
+      <rect x="24" y="40" width="32" height="20" rx="3" fill="#0B4A3A"/>
+      <text x="40" y="54" font-family="Arial, sans-serif" font-weight="900" font-size="10" fill="#FFF" text-anchor="middle">RICE</text>
+    </g>
+
+    <!-- Garri sack -->
+    <g transform="translate(110, 30)">
+      <path d="M15 15 C15 10, 55 10, 55 15 L58 85 C58 90, 12 90, 12 85 Z" fill="#F4B63F" stroke="#DC9C23" stroke-width="2"/>
+      <rect x="18" y="38" width="34" height="18" rx="3" fill="#0B4A3A"/>
+      <text x="35" y="51" font-family="Arial, sans-serif" font-weight="900" font-size="9" fill="#F4B63F" text-anchor="middle">GARRI</text>
+    </g>
+
+    <!-- Tomato cans -->
+    <g transform="translate(85, 80)">
+      <ellipse cx="20" cy="15" rx="14" ry="5" fill="#E2E8F0"/>
+      <path d="M6 15 L6 45 C6 50, 34 50, 34 45 L34 15 Z" fill="#DC2626"/>
+      <circle cx="20" cy="30" r="7" fill="#FEF2F2"/>
+      <circle cx="20" cy="30" r="4" fill="#DC2626"/>
+    </g>
+    <g transform="translate(125, 95)">
+      <ellipse cx="18" cy="12" rx="12" ry="4" fill="#E2E8F0"/>
+      <path d="M6 12 L6 38 C6 42, 30 42, 30 38 L30 12 Z" fill="#B91C1C"/>
+    </g>
+
+    <!-- Oil Bottle -->
+    <g transform="translate(160, 50)">
+      <rect x="12" y="8" width="8" height="8" rx="2" fill="#E8683A"/>
+      <path d="M12 16 L20 16 L26 26 L26 70 C26 74, 6 74, 6 70 L6 26 Z" fill="#F59E0B" stroke="#D97706" stroke-width="1.5"/>
+    </g>
+
+    <!-- Vegetables Leaves -->
+    <path d="M190 60 C230 40, 240 80, 210 110 C180 80, 200 40, 190 60 Z" fill="#15803D"/>
+    <path d="M175 75 C210 60, 220 95, 195 115 Z" fill="#22C55E"/>
+
+    <!-- Green Plastic Basket Structure -->
+    <path d="M40 100 L230 100 L210 200 L60 200 Z" fill="#0B4A3A"/>
+    <!-- Basket rim -->
+    <rect x="35" y="95" width="200" height="12" rx="6" fill="#126852"/>
+    <!-- Basket grid holes -->
+    <g fill="#073328">
+      <rect x="65" y="118" width="12" height="18" rx="2"/>
+      <rect x="85" y="118" width="12" height="18" rx="2"/>
+      <rect x="105" y="118" width="12" height="18" rx="2"/>
+      <rect x="125" y="118" width="12" height="18" rx="2"/>
+      <rect x="145" y="118" width="12" height="18" rx="2"/>
+      <rect x="165" y="118" width="12" height="18" rx="2"/>
+      <rect x="185" y="118" width="12" height="18" rx="2"/>
+
+      <rect x="70" y="146" width="12" height="18" rx="2"/>
+      <rect x="90" y="146" width="12" height="18" rx="2"/>
+      <rect x="110" y="146" width="12" height="18" rx="2"/>
+      <rect x="130" y="146" width="12" height="18" rx="2"/>
+      <rect x="150" y="146" width="12" height="18" rx="2"/>
+      <rect x="170" y="146" width="12" height="18" rx="2"/>
+      <rect x="190" y="146" width="12" height="18" rx="2"/>
+
+      <rect x="75" y="172" width="10" height="15" rx="2"/>
+      <rect x="95" y="172" width="10" height="15" rx="2"/>
+      <rect x="115" y="172" width="10" height="15" rx="2"/>
+      <rect x="135" y="172" width="10" height="15" rx="2"/>
+      <rect x="155" y="172" width="10" height="15" rx="2"/>
+      <rect x="175" y="172" width="10" height="15" rx="2"/>
+    </g>
+  </g>
+
+  <!-- Right: Orange Delivery Scooter with "LAGOS DELIVERS" Box -->
+  <g transform="translate(390, 180)">
+    <!-- Wheels -->
+    <!-- Back wheel -->
+    <circle cx="50" cy="180" r="26" fill="#1F2A25"/>
+    <circle cx="50" cy="180" r="16" fill="#CBD5E1"/>
+    <circle cx="50" cy="180" r="6" fill="#1F2A25"/>
+
+    <!-- Front wheel -->
+    <circle cx="170" cy="180" r="26" fill="#1F2A25"/>
+    <circle cx="170" cy="180" r="16" fill="#CBD5E1"/>
+    <circle cx="170" cy="180" r="6" fill="#1F2A25"/>
+
+    <!-- Scooter Body -->
+    <path d="M50 170 Q90 170, 110 130 L130 130 L155 170 Z" fill="#E8683A"/>
+    <path d="M120 130 L145 70 L155 70 L135 130 Z" fill="#E8683A"/>
+    <!-- Front mudguard & steering -->
+    <path d="M150 150 Q170 145, 185 165 L175 175 Q165 160, 150 160 Z" fill="#D2572B"/>
+    <circle cx="148" cy="65" r="9" fill="#0B4A3A"/>
+    <!-- Headlight -->
+    <ellipse cx="156" cy="65" rx="5" ry="7" fill="#FEF08A"/>
+    <!-- Handlebar -->
+    <rect x="135" y="58" width="22" height="5" rx="2" fill="#1F2A25"/>
+
+    <!-- Seat -->
+    <path d="M60 120 C75 110, 105 110, 115 125 L60 125 Z" fill="#1F2A25"/>
+
+    <!-- Delivery Box on the back (Teal/Dark Green with "LAGOS DELIVERS") -->
+    <g transform="translate(20, 60)">
+      <path d="M10 25 L50 5 L85 25 L45 45 Z" fill="#126852"/>
+      <path d="M10 25 L45 45 L45 95 L10 75 Z" fill="#0B4A3A"/>
+      <path d="M45 45 L85 25 L85 75 L45 95 Z" fill="#062E24"/>
+      <!-- Text on box -->
+      <g transform="translate(48, 62) rotate(-15)">
+        <text x="0" y="0" font-family="Arial, sans-serif" font-weight="900" font-size="9" fill="#F4B63F" letter-spacing="1">LAGOS</text>
+        <text x="0" y="11" font-family="Arial, sans-serif" font-weight="900" font-size="8" fill="#FFFFFF" letter-spacing="1">DELIVERS</text>
+      </g>
+    </g>
+  </g>
+
+  <!-- Decorative diagonal speed stripes in bottom right corner -->
+  <g transform="translate(520, 360)">
+    <line x1="0" y1="30" x2="60" y2="-10" stroke="#F4B63F" stroke-width="6" stroke-linecap="round"/>
+    <line x1="20" y1="40" x2="80" y2="0" stroke="#E8683A" stroke-width="6" stroke-linecap="round"/>
+    <line x1="40" y1="50" x2="100" y2="10" stroke="#0B4A3A" stroke-width="6" stroke-linecap="round"/>
+  </g>
+</svg>`);
+
+// 2. Isolated delivery scooter
+writeSvg('delivery-scooter.svg', `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 200" width="100%" height="100%" fill="none">
+  <ellipse cx="120" cy="180" rx="90" ry="14" fill="#EADFC8" opacity="0.6"/>
+  <circle cx="55" cy="150" r="22" fill="#1F2A25"/>
+  <circle cx="55" cy="150" r="14" fill="#CBD5E1"/>
+  <circle cx="165" cy="150" r="22" fill="#1F2A25"/>
+  <circle cx="165" cy="150" r="14" fill="#CBD5E1"/>
+  <path d="M55 140 Q95 140, 115 105 L135 105 L155 140 Z" fill="#E8683A"/>
+  <path d="M125 105 L145 50 L155 50 L135 105 Z" fill="#E8683A"/>
+  <circle cx="150" cy="45" r="8" fill="#0B4A3A"/>
+  <ellipse cx="156" cy="45" rx="4" ry="6" fill="#FEF08A"/>
+  <path d="M65 95 C80 85, 110 85, 120 100 L65 100 Z" fill="#1F2A25"/>
+  <g transform="translate(25, 45)">
+    <path d="M10 20 L40 5 L70 20 L40 35 Z" fill="#126852"/>
+    <path d="M10 20 L40 35 L40 75 L10 60 Z" fill="#0B4A3A"/>
+    <path d="M40 35 L70 20 L70 60 L40 75 Z" fill="#062E24"/>
+    <text x="42" y="52" font-family="Arial, sans-serif" font-weight="900" font-size="7" fill="#F4B63F" text-anchor="middle">LAGOS</text>
+    <text x="42" y="61" font-family="Arial, sans-serif" font-weight="900" font-size="6" fill="#FFF" text-anchor="middle">DELIVERS</text>
+  </g>
+</svg>`);
+
+// 3. Order confirmation celebrate illustration
+writeSvg('order-success.svg', `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 220" width="100%" height="100%" fill="none">
+  <circle cx="150" cy="100" r="70" fill="#E8F4F0"/>
+  <circle cx="150" cy="100" r="54" fill="#0B4A3A"/>
+  <path d="M130 100 L145 115 L175 85" stroke="#FFFFFF" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+  <!-- Sparkles -->
+  <polygon points="150,15 153,25 163,28 153,31 150,41 147,31 137,28 147,25" fill="#F4B63F"/>
+  <polygon points="65,85 67,93 75,95 67,97 65,105 63,97 55,95 63,93" fill="#E8683A"/>
+  <polygon points="235,85 237,93 245,95 237,97 235,105 233,97 225,95 233,93" fill="#F4B63F"/>
+  <polygon points="100,165 102,171 108,173 102,175 100,181 98,175 92,173 98,171" fill="#15803D"/>
+  <polygon points="200,165 202,171 208,173 202,175 200,181 198,175 192,173 198,171" fill="#E8683A"/>
+</svg>`);
+
+console.log('Illustration SVGs generated successfully.');

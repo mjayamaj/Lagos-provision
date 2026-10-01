@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" width="100%" height="100%">
+  <rect width="120" height="120" rx="16" fill="#FDFBF5"/>
+  <rect x="36" y="34" width="48" height="54" rx="8" fill="#FEF08A" stroke="#EAB308" stroke-width="2"/>
+  <rect x="42" y="50" width="36" height="22" rx="4" fill="#0B4A3A"/>
+  <text x="60" y="65" font-family="Arial, sans-serif" font-weight="900" font-size="9" fill="#FEF08A" text-anchor="middle">EGUSI</text>
+</svg>

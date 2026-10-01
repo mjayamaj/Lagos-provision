@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 200" width="100%" height="100%" fill="none">
+  <ellipse cx="120" cy="180" rx="90" ry="14" fill="#EADFC8" opacity="0.6"/>
+  <circle cx="55" cy="150" r="22" fill="#1F2A25"/>
+  <circle cx="55" cy="150" r="14" fill="#CBD5E1"/>
+  <circle cx="165" cy="150" r="22" fill="#1F2A25"/>
+  <circle cx="165" cy="150" r="14" fill="#CBD5E1"/>
+  <path d="M55 140 Q95 140, 115 105 L135 105 L155 140 Z" fill="#E8683A"/>
+  <path d="M125 105 L145 50 L155 50 L135 105 Z" fill="#E8683A"/>
+  <circle cx="150" cy="45" r="8" fill="#0B4A3A"/>
+  <ellipse cx="156" cy="45" rx="4" ry="6" fill="#FEF08A"/>
+  <path d="M65 95 C80 85, 110 85, 120 100 L65 100 Z" fill="#1F2A25"/>
+  <g transform="translate(25, 45)">
+    <path d="M10 20 L40 5 L70 20 L40 35 Z" fill="#126852"/>
+    <path d="M10 20 L40 35 L40 75 L10 60 Z" fill="#0B4A3A"/>
+    <path d="M40 35 L70 20 L70 60 L40 75 Z" fill="#062E24"/>
+    <text x="42" y="52" font-family="Arial, sans-serif" font-weight="900" font-size="7" fill="#F4B63F" text-anchor="middle">LAGOS</text>
+    <text x="42" y="61" font-family="Arial, sans-serif" font-weight="900" font-size="6" fill="#FFF" text-anchor="middle">DELIVERS</text>
+  </g>
+</svg>

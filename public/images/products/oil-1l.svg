@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" width="100%" height="100%">
+  <rect width="120" height="120" rx="16" fill="#FDFBF5"/>
+  <rect x="54" y="24" width="12" height="8" rx="2" fill="#E8683A"/>
+  <path d="M56 32 L64 32 L70 42 L72 88 C72 92, 48 92, 48 88 L50 42 Z" fill="#F59E0B" stroke="#D97706" stroke-width="1.5"/>
+  <rect x="50" y="54" width="20" height="18" rx="2" fill="#FEF3C7"/>
+  <text x="60" y="65" font-family="Arial, sans-serif" font-weight="900" font-size="6" fill="#B45309" text-anchor="middle">PURE</text>
+  <text x="60" y="70" font-family="Arial, sans-serif" font-weight="800" font-size="5" fill="#B45309" text-anchor="middle">OIL • 1L</text>
+</svg>

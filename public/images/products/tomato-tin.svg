@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" width="100%" height="100%">
+  <rect width="120" height="120" rx="16" fill="#FDFBF5"/>
+  <ellipse cx="60" cy="36" rx="26" ry="7" fill="#CBD5E1"/>
+  <ellipse cx="60" cy="35" rx="25" ry="6" fill="#E2E8F0"/>
+  <path d="M34 36 L34 84 C34 91, 86 91, 86 84 L86 36 Z" fill="#DC2626"/>
+  <ellipse cx="60" cy="84" rx="26" ry="7" fill="#B91C1C"/>
+  <circle cx="60" cy="60" r="14" fill="#FEF2F2"/>
+  <circle cx="57" cy="62" r="7" fill="#DC2626"/>
+  <circle cx="64" cy="62" r="6" fill="#EF4444"/>
+  <path d="M57 54 C58 50, 64 50, 63 54" stroke="#16A34A" stroke-width="2" fill="none"/>
+  <text x="60" y="80" font-family="Arial, sans-serif" font-weight="800" font-size="6" fill="#FFFFFF" text-anchor="middle" letter-spacing="0.5">TOMATO STEW</text>
+</svg>

@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" width="100%" height="100%">
+  <rect width="120" height="120" rx="16" fill="#FDFBF5"/>
+  <rect x="36" y="32" width="48" height="56" rx="6" fill="#1E3A8A"/>
+  <circle cx="60" cy="54" r="14" fill="#DC2626"/>
+  <text x="60" y="78" font-family="Arial, sans-serif" font-weight="900" font-size="9" fill="#FFF" text-anchor="middle">OATS</text>
+</svg>

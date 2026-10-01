@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" width="100%" height="100%">
+  <rect width="120" height="120" rx="16" fill="#FDFBF5"/>
+  <path d="M35 34 C35 30, 85 30, 85 34 L88 88 C88 94, 32 94, 32 88 Z" fill="#F4B63F" stroke="#DC9C23" stroke-width="2"/>
+  <path d="M32 34 C45 37, 75 37, 88 34 L86 38 C75 40, 45 40, 34 38 Z" fill="#DC9C23"/>
+  <rect x="38" y="50" width="44" height="22" rx="4" fill="#0B4A3A"/>
+  <text x="60" y="65" font-family="Arial, sans-serif" font-weight="900" font-size="11" fill="#F4B63F" text-anchor="middle" letter-spacing="1">GARRI</text>
+  <text x="60" y="82" font-family="Arial, sans-serif" font-weight="800" font-size="8" fill="#583B08" text-anchor="middle">Ijebu • 5kg</text>
+</svg>
