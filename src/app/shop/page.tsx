@@ -17,6 +17,7 @@ import { TopLeftStripes, BottomRightStripes } from '@/components/ui/CornerStripe
 import { ProductCard } from '@/components/shop/ProductCard';
 import { CATEGORIES, PRODUCTS } from '@/data/catalog';
 import { Product } from '@/types';
+import { AuthGuard } from '@/components/auth/AuthGuard';
 
 function ShopContent() {
   const searchParams = useSearchParams();
@@ -429,16 +430,18 @@ function ShopContent() {
 
 export default function ShopPage() {
   return (
-    <div className="min-h-screen bg-[#FBF6EA] flex flex-col relative overflow-x-hidden">
-      <TopLeftStripes />
-      <BottomRightStripes />
-      <Header />
-      <main className="flex-1">
-        <Suspense fallback={<div className="p-12 text-center text-sm">Loading market catalog...</div>}>
-          <ShopContent />
-        </Suspense>
-      </main>
-      <Footer />
-    </div>
+    <AuthGuard>
+      <div className="min-h-screen bg-[#FBF6EA] flex flex-col relative overflow-x-hidden">
+        <TopLeftStripes />
+        <BottomRightStripes />
+        <Header />
+        <main className="flex-1">
+          <Suspense fallback={<div className="p-12 text-center text-sm">Loading market catalog...</div>}>
+            <ShopContent />
+          </Suspense>
+        </main>
+        <Footer />
+      </div>
+    </AuthGuard>
   );
 }

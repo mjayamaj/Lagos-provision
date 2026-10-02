@@ -15,12 +15,14 @@ export function Header({ isCheckout = false }: HeaderProps) {
   const { user, signInWithGoogle, signOut } = useAuth();
   const [userMenuOpen, setUserMenuOpen] = useState(false);
 
+  const homeHref = user ? '/shop' : '/';
+
   return (
     <header className="w-full bg-[#FBF6EA] border-b border-[#EADFC8]/60 relative z-20">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
         {/* Brand Left */}
         <div className="flex items-center gap-3 sm:gap-4">
-          <Link href="/" className="flex items-center gap-3 group">
+          <Link href={homeHref} className="flex items-center gap-3 group">
             {/* Basket Logo Mark */}
             <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-[#0B4A3A] flex items-center justify-center shadow-sm group-hover:scale-105 transition-transform duration-200">
               <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -85,18 +87,17 @@ export function Header({ isCheckout = false }: HeaderProps) {
           </div>
         ) : (
           <div className="flex items-center gap-3 sm:gap-6">
-            {/* Nav links */}
-            <nav className="hidden lg:flex items-center gap-6 text-sm font-semibold text-[#1F2A25]">
-              <Link href="/shop" className="hover:text-[#0B4A3A] transition-colors">
-                Shop Catalog
-              </Link>
-              <Link href="/#how-it-works" className="hover:text-[#0B4A3A] transition-colors">
-                How It Works
-              </Link>
-              <Link href="/#coverage" className="hover:text-[#0B4A3A] transition-colors">
-                Lagos LGAs
-              </Link>
-            </nav>
+            {/* Nav links (Only for signed-in users) */}
+            {user && (
+              <nav className="hidden lg:flex items-center gap-6 text-sm font-semibold text-[#1F2A25]">
+                <Link href="/shop" className="hover:text-[#0B4A3A] transition-colors">
+                  Shop Catalog
+                </Link>
+                <Link href="/account/orders" className="hover:text-[#0B4A3A] transition-colors">
+                  My Orders
+                </Link>
+              </nav>
+            )}
 
             {/* Google Sign-in / User Profile */}
             {user ? (
@@ -170,19 +171,21 @@ export function Header({ isCheckout = false }: HeaderProps) {
               </button>
             )}
 
-            {/* Cart Icon */}
-            <Link
-              href="/cart"
-              className="relative p-2.5 rounded-xl bg-white border border-[#D4C8B0] hover:border-[#0B4A3A] transition-colors text-[#0B4A3A] shadow-xs flex items-center justify-center group"
-              aria-label="View Cart"
-            >
-              <ShoppingBag className="w-5 h-5 group-hover:scale-110 transition-transform" />
-              {itemCount > 0 && (
-                <span className="absolute -top-2 -right-2 bg-[#E8683A] text-white text-[11px] font-extrabold w-5 h-5 rounded-full flex items-center justify-center shadow-xs animate-in zoom-in-50 duration-200">
-                  {itemCount}
-                </span>
-              )}
-            </Link>
+            {/* Cart Icon (Only for authenticated users) */}
+            {user && (
+              <Link
+                href="/cart"
+                className="relative p-2.5 rounded-xl bg-white border border-[#D4C8B0] hover:border-[#0B4A3A] transition-colors text-[#0B4A3A] shadow-xs flex items-center justify-center group"
+                aria-label="View Cart"
+              >
+                <ShoppingBag className="w-5 h-5 group-hover:scale-110 transition-transform" />
+                {itemCount > 0 && (
+                  <span className="absolute -top-2 -right-2 bg-[#E8683A] text-white text-[11px] font-extrabold w-5 h-5 rounded-full flex items-center justify-center shadow-xs animate-in zoom-in-50 duration-200">
+                    {itemCount}
+                  </span>
+                )}
+              </Link>
+            )}
           </div>
         )}
       </div>

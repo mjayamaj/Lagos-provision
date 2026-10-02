@@ -8,8 +8,9 @@ import { Footer } from '@/components/layout/Footer';
 import { TopLeftStripes, BottomRightStripes } from '@/components/ui/CornerStripes';
 import { useAuth } from '@/context/AuthContext';
 import { formatNaira } from '@/config/delivery';
+import { AuthGuard } from '@/components/auth/AuthGuard';
 
-export default function MyOrdersPage() {
+function MyOrdersContent() {
   const { user, signInWithGoogle } = useAuth();
 
   // Demo past orders for logged in user or preview
@@ -116,5 +117,13 @@ export default function MyOrdersPage() {
 
       <Footer />
     </div>
+  );
+}
+
+export default function MyOrdersPage() {
+  return (
+    <AuthGuard>
+      <MyOrdersContent />
+    </AuthGuard>
   );
 }

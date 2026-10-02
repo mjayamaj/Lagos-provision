@@ -10,8 +10,9 @@ import { Stepper } from '@/components/ui/Stepper';
 import { TopLeftStripes, BottomRightStripes } from '@/components/ui/CornerStripes';
 import { useCart } from '@/context/CartContext';
 import { formatNaira } from '@/config/delivery';
+import { AuthGuard } from '@/components/auth/AuthGuard';
 
-export default function CartPage() {
+function CartContent() {
   const router = useRouter();
   const {
     items,
@@ -225,5 +226,13 @@ export default function CartPage() {
 
       <Footer />
     </div>
+  );
+}
+
+export default function CartPage() {
+  return (
+    <AuthGuard>
+      <CartContent />
+    </AuthGuard>
   );
 }

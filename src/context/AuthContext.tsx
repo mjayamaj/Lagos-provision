@@ -9,24 +9,18 @@ interface AuthContextType {
   isLoading: boolean;
   signInWithGoogle: () => Promise<void>;
   signOut: () => Promise<void>;
-  mockSignIn: (email?: string, name?: string) => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
-
-const LOCAL_USER_KEY = 'lagos_provision_user_v1';
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<Profile | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    // Check local storage for mock user or previous session
+    // Clean up any legacy mock user data from previous testing
     try {
-      const saved = localStorage.getItem(LOCAL_USER_KEY);
-      if (saved) {
-        setUser(JSON.parse(saved));
-      }
+      localStorage.removeItem('lagos_provision_user_v1');
     } catch {
       // Ignore
     }
@@ -43,7 +37,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             created_at: session.user.created_at,
           };
           setUser(profile);
-          localStorage.setItem(LOCAL_USER_KEY, JSON.stringify(profile));
+        } else {
+          setUser(null);
         }
         setIsLoading(false);
       });
@@ -59,10 +54,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             created_at: session.user.created_at,
           };
           setUser(profile);
-          localStorage.setItem(LOCAL_USER_KEY, JSON.stringify(profile));
         } else {
           setUser(null);
-          localStorage.removeItem(LOCAL_USER_KEY);
         }
       });
 
@@ -77,29 +70,20 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const signInWithGoogle = async () => {
     if (isSupabaseConfigured && supabase) {
       const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || window.location.origin;
-      await supabase.auth.signInWithOAuth({
+      const { error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
-          redirectTo: `${siteUrl}/api/auth/callback`,
+          redirectTo: `${siteUrl}/api/auth/callback?next=/shop`,
         },
       });
+      if (error) {
+        throw error;
+      }
     } else {
-      // Demo Google login for testing without live Supabase credentials
-      mockSignIn('adeola.johnson@example.com', 'Adeola Johnson');
+      throw new Error(
+        'Supabase is not configured. Please add NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY to .env.local'
+      );
     }
-  };
-
-  const mockSignIn = (email = 'adeola.johnson@example.com', name = 'Adeola Johnson') => {
-    const mockProfile: Profile = {
-      id: 'usr-demo-adeola',
-      email,
-      full_name: name,
-      avatar_url: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&h=100&fit=crop&crop=faces',
-      phone: '+234 801 234 5678',
-      created_at: new Date().toISOString(),
-    };
-    setUser(mockProfile);
-    localStorage.setItem(LOCAL_USER_KEY, JSON.stringify(mockProfile));
   };
 
   const signOut = async () => {
@@ -107,7 +91,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       await supabase.auth.signOut();
     }
     setUser(null);
-    localStorage.removeItem(LOCAL_USER_KEY);
   };
 
   return (
@@ -117,7 +100,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         isLoading,
         signInWithGoogle,
         signOut,
-        mockSignIn,
       }}
     >
       {children}

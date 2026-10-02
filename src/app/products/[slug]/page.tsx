@@ -10,6 +10,7 @@ import { ProductDetailClient } from '@/components/shop/ProductDetailClient';
 import { getProductBySlug, getProducts } from '@/lib/db';
 import { CATEGORIES } from '@/data/catalog';
 import { formatNaira } from '@/config/delivery';
+import { AuthGuard } from '@/components/auth/AuthGuard';
 
 export default async function ProductDetailPage(props: {
   params: Promise<{ slug: string }>;
@@ -30,10 +31,11 @@ export default async function ProductDetailPage(props: {
   const category = CATEGORIES.find((c) => c.id === product.category_id);
 
   return (
-    <div className="min-h-screen bg-[#FBF6EA] flex flex-col relative overflow-x-hidden">
-      <TopLeftStripes />
-      <BottomRightStripes />
-      <Header />
+    <AuthGuard>
+      <div className="min-h-screen bg-[#FBF6EA] flex flex-col relative overflow-x-hidden">
+        <TopLeftStripes />
+        <BottomRightStripes />
+        <Header />
 
       <main className="flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full">
         {/* Breadcrumb */}
@@ -170,5 +172,6 @@ export default async function ProductDetailPage(props: {
 
       <Footer />
     </div>
+    </AuthGuard>
   );
 }

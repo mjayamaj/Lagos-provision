@@ -2,6 +2,7 @@ import { Order } from '@/types';
 import { formatNaira, ACCEPTED_DOOR_PAYMENT_METHODS } from '@/config/delivery';
 import { logEmail } from '@/lib/db';
 import { Resend } from 'resend';
+import nodemailer from 'nodemailer';
 
 // Resend Configuration (Recommended: Free tier, 3,000 emails/month, no credit card required)
 const RESEND_API_KEY = process.env.RESEND_API_KEY || '';
@@ -9,6 +10,24 @@ const RESEND_FROM = process.env.RESEND_FROM || 'Lagos Provision <onboarding@rese
 
 export const isResendConfigured = Boolean(
   RESEND_API_KEY && !RESEND_API_KEY.includes('your-resend-api-key')
+);
+
+// Nodemailer / SMTP Configuration (Backup or Primary transactional email)
+const SMTP_HOST = process.env.SMTP_HOST || 'smtp.gmail.com';
+const SMTP_PORT = parseInt(process.env.SMTP_PORT || '465', 10);
+const SMTP_SECURE = process.env.SMTP_SECURE !== undefined
+  ? process.env.SMTP_SECURE === 'true'
+  : SMTP_PORT === 465;
+const SMTP_USER = process.env.SMTP_USER || '';
+const SMTP_PASS = process.env.SMTP_PASS || '';
+const SMTP_FROM = process.env.SMTP_FROM || process.env.RESEND_FROM || 'Lagos Provision <orders@lagosprovision.ng>';
+const SMTP_SERVICE = process.env.SMTP_SERVICE || '';
+
+export const isNodemailerConfigured = Boolean(
+  SMTP_USER &&
+  SMTP_PASS &&
+  !SMTP_USER.includes('your-email') &&
+  !SMTP_PASS.includes('your-password')
 );
 
 // Mailgun Configuration (Fallback if configured)
@@ -22,6 +41,45 @@ export const isMailgunConfigured = Boolean(
   MAILGUN_DOMAIN &&
   !MAILGUN_API_KEY.includes('your-mailgun-api-key')
 );
+
+export async function sendViaNodemailer(
+  to: string,
+  subject: string,
+  html: string,
+  text: string
+): Promise<{ success: boolean; messageId?: string; error?: string }> {
+  try {
+    const transportConfig: any = SMTP_SERVICE
+      ? {
+          service: SMTP_SERVICE,
+          auth: { user: SMTP_USER, pass: SMTP_PASS },
+        }
+      : {
+          host: SMTP_HOST,
+          port: SMTP_PORT,
+          secure: SMTP_SECURE,
+          auth: { user: SMTP_USER, pass: SMTP_PASS },
+          tls: {
+            rejectUnauthorized: process.env.NODE_ENV === 'production',
+          },
+        };
+
+    const transporter = nodemailer.createTransport(transportConfig);
+    const info = await transporter.sendMail({
+      from: SMTP_FROM,
+      to,
+      subject,
+      text,
+      html,
+    });
+
+    console.log(`[Nodemailer] Email sent successfully to ${to}, messageId: ${info.messageId}`);
+    return { success: true, messageId: info.messageId };
+  } catch (err: any) {
+    console.error('[Nodemailer Error]:', err);
+    return { success: false, error: err.message || 'Nodemailer failed' };
+  }
+}
 
 export function generateOrderConfirmationHtml(order: Order): string {
   const itemsHtml = (order.items || [])
@@ -231,15 +289,37 @@ export async function sendOrderConfirmationEmail(order: Order): Promise<{
   success: boolean;
   messageId?: string;
   error?: string;
+  provider?: string;
 }> {
   const recipient = order.customer_email;
   const subject = `Order Confirmed #${order.order_number} — Lagos Provision (Pay on Delivery)`;
   const htmlContent = generateOrderConfirmationHtml(order);
   const textContent = generateOrderConfirmationText(order);
 
-  // 1. Try Resend (Recommended: free tier, no card required)
-  if (isResendConfigured) {
+  const preferredProvider = (process.env.EMAIL_PROVIDER || 'resend').toLowerCase().trim();
+
+  // 1. If Nodemailer is set as the preferred primary provider, try it first
+  if (preferredProvider === 'nodemailer' && isNodemailerConfigured) {
+    console.log(`[Email Dispatch] Sending via primary Nodemailer to ${recipient}...`);
+    const nodeRes = await sendViaNodemailer(recipient, subject, htmlContent, textContent);
+    if (nodeRes.success) {
+      await logEmail({
+        order_id: order.id,
+        to_email: recipient,
+        template: 'order_confirmation',
+        status: 'sent',
+        mailgun_message_id: nodeRes.messageId || `nodemailer-${Date.now()}`,
+        attempts: 1,
+      });
+      return { success: true, messageId: nodeRes.messageId, provider: 'nodemailer' };
+    }
+    console.warn(`[Nodemailer Primary Error]: ${nodeRes.error}. Trying fallback providers...`);
+  }
+
+  // 2. Try Resend if configured and not explicitly skipped
+  if (isResendConfigured && preferredProvider !== 'mailgun') {
     try {
+      console.log(`[Email Dispatch] Attempting Resend for order ${order.order_number} to ${recipient}...`);
       const resend = new Resend(RESEND_API_KEY);
       const { data, error } = await resend.emails.send({
         from: RESEND_FROM,
@@ -249,45 +329,51 @@ export async function sendOrderConfirmationEmail(order: Order): Promise<{
         text: textContent,
       });
 
-      if (error) {
-        console.error('Resend Error:', error);
+      if (!error && data?.id) {
+        console.log(`[Resend Success] Email sent: ${data.id}`);
         await logEmail({
           order_id: order.id,
           to_email: recipient,
           template: 'order_confirmation',
-          status: 'failed',
-          error: error.message,
+          status: 'sent',
+          mailgun_message_id: data.id,
           attempts: 1,
         });
-        return { success: false, error: error.message };
+        return { success: true, messageId: data.id, provider: 'resend' };
       }
 
-      await logEmail({
-        order_id: order.id,
-        to_email: recipient,
-        template: 'order_confirmation',
-        status: 'sent',
-        mailgun_message_id: data?.id || `resend-${Date.now()}`,
-        attempts: 1,
-      });
-      return { success: true, messageId: data?.id };
+      console.warn(`[Resend Failed]: ${error?.message || 'Unknown error'}. Initiating backup via Nodemailer...`);
     } catch (err: any) {
-      console.error('Error sending via Resend:', err);
-      await logEmail({
-        order_id: order.id,
-        to_email: recipient,
-        template: 'order_confirmation',
-        status: 'failed',
-        error: err.message,
-        attempts: 1,
-      });
-      return { success: false, error: err.message };
+      console.warn(`[Resend Exception]: ${err.message}. Initiating backup via Nodemailer...`);
     }
   }
 
-  // 2. Try Mailgun if configured
+  // 3. BACKUP: Try Nodemailer (SMTP)
+  if (isNodemailerConfigured) {
+    try {
+      console.log(`[Email Dispatch] Attempting Nodemailer (SMTP) backup to ${recipient}...`);
+      const nodeRes = await sendViaNodemailer(recipient, subject, htmlContent, textContent);
+      if (nodeRes.success) {
+        await logEmail({
+          order_id: order.id,
+          to_email: recipient,
+          template: 'order_confirmation',
+          status: 'sent',
+          mailgun_message_id: nodeRes.messageId || `nodemailer-${Date.now()}`,
+          attempts: 1,
+        });
+        return { success: true, messageId: nodeRes.messageId, provider: 'nodemailer' };
+      }
+      console.warn(`[Nodemailer Backup Failed]: ${nodeRes.error}. Attempting Mailgun if configured...`);
+    } catch (err: any) {
+      console.warn(`[Nodemailer Backup Exception]: ${err.message}. Attempting Mailgun...`);
+    }
+  }
+
+  // 4. Try Mailgun if configured
   if (isMailgunConfigured) {
     try {
+      console.log(`[Email Dispatch] Attempting Mailgun for order ${order.order_number}...`);
       const endpoint = `${MAILGUN_BASE_URL.replace(/\/$/, '')}/v3/${MAILGUN_DOMAIN}/messages`;
       const formData = new URLSearchParams();
       formData.append('from', MAILGUN_FROM);
@@ -297,7 +383,6 @@ export async function sendOrderConfirmationEmail(order: Order): Promise<{
       formData.append('html', htmlContent);
 
       const authHeader = 'Basic ' + Buffer.from(`api:${MAILGUN_API_KEY}`).toString('base64');
-
       const res = await fetch(endpoint, {
         method: 'POST',
         headers: {
@@ -317,36 +402,17 @@ export async function sendOrderConfirmationEmail(order: Order): Promise<{
           mailgun_message_id: data.id,
           attempts: 1,
         });
-        return { success: true, messageId: data.id };
-      } else {
-        const errorText = await res.text();
-        console.error('Mailgun API Error:', res.status, errorText);
-        await logEmail({
-          order_id: order.id,
-          to_email: recipient,
-          template: 'order_confirmation',
-          status: 'failed',
-          error: `HTTP ${res.status}: ${errorText}`,
-          attempts: 1,
-        });
-        return { success: false, error: errorText };
+        return { success: true, messageId: data.id, provider: 'mailgun' };
       }
+      const errorText = await res.text();
+      console.warn(`[Mailgun Failed]: HTTP ${res.status}: ${errorText}`);
     } catch (err: any) {
-      console.error('Error sending email via Mailgun:', err);
-      await logEmail({
-        order_id: order.id,
-        to_email: recipient,
-        template: 'order_confirmation',
-        status: 'failed',
-        error: err.message || 'Unknown network error',
-        attempts: 1,
-      });
-      return { success: false, error: err.message };
+      console.warn('[Mailgun Exception]:', err.message);
     }
   }
 
-  // 3. Fallback: Simulation mode
-  console.log(`[Simulated Email Send] To: ${recipient}, Subject: ${subject}`);
+  // 5. Final fallback: Simulation mode so orders are NEVER interrupted
+  console.log(`[Simulated Email Dispatch] Order ${order.order_number} to ${recipient} (no email service reached)`);
   await logEmail({
     order_id: order.id,
     to_email: recipient,
@@ -358,5 +424,6 @@ export async function sendOrderConfirmationEmail(order: Order): Promise<{
   return {
     success: true,
     messageId: `simulated-${Date.now()}`,
+    provider: 'simulated',
   };
 }

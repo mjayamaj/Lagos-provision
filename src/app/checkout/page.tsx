@@ -12,8 +12,9 @@ import { useCart } from '@/context/CartContext';
 import { useAuth } from '@/context/AuthContext';
 import { checkoutFormSchema, CheckoutFormData } from '@/lib/validation/checkout';
 import { FOOTER_TAGLINE } from '@/config/delivery';
+import { AuthGuard } from '@/components/auth/AuthGuard';
 
-export default function CheckoutPage() {
+function CheckoutContent() {
   const router = useRouter();
   const { items, totalKobo, loadDesignSeedCart, isLoaded, clearCart } = useCart();
   const { user } = useAuth();
@@ -201,5 +202,13 @@ export default function CheckoutPage() {
 
       <Footer />
     </div>
+  );
+}
+
+export default function CheckoutPage() {
+  return (
+    <AuthGuard>
+      <CheckoutContent />
+    </AuthGuard>
   );
 }

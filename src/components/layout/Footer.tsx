@@ -88,7 +88,16 @@ export function Footer() {
               <li>WhatsApp Orders: <strong className="text-[#1F2A25]">+234 801 234 5678</strong></li>
               <li>Delivery Hours: Monday – Saturday (8am – 7pm)</li>
               <li>Door Payment: Cash, POS & Bank Transfer</li>
-              <li className="pt-2 text-[11px] text-[#6B7280]">NDPR Privacy Compliant</li>
+              <li className="pt-2 flex items-center gap-3 text-xs">
+                <Link href="/privacy" className="text-[#0B4A3A] hover:underline font-semibold">
+                  Privacy Policy
+                </Link>
+                <span>•</span>
+                <Link href="/terms" className="text-[#0B4A3A] hover:underline font-semibold">
+                  Terms of Service
+                </Link>
+              </li>
+              <li className="text-[11px] text-[#6B7280]">NDPR & Google OAuth Compliant</li>
             </ul>
           </div>
         </div>
